@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Poppins', sans-serif;
+}
+
+.suspense-glow {
+  animation: suspensePulse 3s ease-in-out infinite;
+}
+
+@keyframes suspensePulse {
+  0% { text-shadow: 0 0 2px rgba(167, 139, 250, 0.5); }
+  50% { text-shadow: 0 0 12px rgba(167, 139, 250, 0.8); }
+  100% { text-shadow: 0 0 2px rgba(167, 139, 250, 0.5); }
+}
