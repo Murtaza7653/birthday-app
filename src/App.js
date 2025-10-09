@@ -1,5 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Confetti from "./Confetti.json";
+// import birthdayMusic from "./audio/birthday-music.mp3";
+import birthdayMusic from "./audio/birthday-song.mp3";
 import avatar01 from "./images/avatar_01.webp";
 import avatar02 from "./images/avatar_02.webp";
 import avatar03 from "./images/avatar_03.webp";
@@ -14,6 +17,8 @@ import photo05 from "./images/photos_05.webp";
 import photo06 from "./images/photos_06.webp";
 import photo07 from "./images/photos_07.webp";
 import photo08 from "./images/photos_08.webp";
+import flowers from "./images/flowers.webp";
+import Lottie from "lottie-react";
 
 export default function BirthdayGameApp() {
   const STAGES = {
@@ -26,7 +31,6 @@ export default function BirthdayGameApp() {
     FINAL: 6,
   };
 
-  // --- Replace these with your real assets ---
   const PHOTO_URLS = [
     photo01,
     photo02,
@@ -55,13 +59,13 @@ export default function BirthdayGameApp() {
     avatar05,
     avatar06,
   ];
-  const MUSIC_URL = ""; // optional background music
+  const MUSIC_URL = birthdayMusic; // optional background music
   const NOTES = [
     "You are the queen of my heart 👸🏻",
     "You make my heart happy 😊",
     "You are my sukoon 🤗",
     "Your smile lights up my world 🥰",
-    "My life is better because of you 😇",
+    "My life is better with you in it 😇",
     "You are my Rasmalai 😋",
     "You are my favourite human 😘",
   ];
@@ -161,6 +165,7 @@ export default function BirthdayGameApp() {
               key="final"
               confetti={confetti}
               setConfetti={setConfetti}
+              audioRef={audioRef}
               onRestart={() => {
                 setStage(STAGES.START);
                 setPolaroidIndex(0);
@@ -186,7 +191,6 @@ function StartScreen({ onStart }) {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
       className="w-full h-96 flex flex-col items-center justify-center relative overflow-hidden"
     >
       {/* Animated gradient background with harmonized colors */}
@@ -287,7 +291,7 @@ function GreetingStage({ onNext, onBack }) {
             transition={{ delay: 0.5, duration: 1.5, ease: "easeOut" }}
             className="mt-3 text-beige-700 text-center relative z-10"
           >
-            Get ready for a trip down memory lane... 😊💕
+            Here’s a little glimpse of what happiness looks like to me 😊💕
           </motion.p>
           <motion.button
             onClick={onNext}
@@ -296,7 +300,7 @@ function GreetingStage({ onNext, onBack }) {
             transition={{ delay: 2, duration: 1.5, ease: "easeOut" }}
             className="mt-8 px-6 py-3 rounded-full bg-gradient-to-br from-purple-200 to-pink-200 text-offwhite shadow-lg relative z-10"
           >
-            Let's go! ✨
+            Show me! ✨
           </motion.button>
         </div>
       )}
@@ -772,7 +776,6 @@ function ScratchStage({ onRevealed, scratchRevealed, onNext }) {
           {showText}
         </p>
 
-        {/* {currentLine >= lines.length && ( */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -782,17 +785,22 @@ function ScratchStage({ onRevealed, scratchRevealed, onNext }) {
             display: `${currentLine >= lines.length ? "block" : "none"}`,
           }}
         >
-          <div className="mt-6 mx-auto w-full max-w-md">
+          <div className="mt-6 mx-auto max-w-md flex flex-col items-center justify-center">
             <div
-              className="relative bg-white rounded-lg overflow-hidden"
+              className="relative w-60 bg-white rounded-lg overflow-hidden"
               style={{ height: 220 }}
             >
               <div
-                className="absolute inset-0 flex items-center justify-center text-center px-4 text-lg font-semibold"
+                className="absolute inset-0 flex mt-1 d-flex justify-center text-center px-4 text-lg "
                 style={{ pointerEvents: "none" }}
               >
-                Surprise Text Below
+                Flowers for you 💐💖
               </div>
+              <img
+                src={flowers}
+                alt="polaroid"
+                className="w-60 h-60 object-cover rounded-md"
+              />
               <canvas
                 ref={canvasRef}
                 className="absolute inset-0 w-full h-full"
@@ -808,7 +816,6 @@ function ScratchStage({ onRevealed, scratchRevealed, onNext }) {
                 Scratch the card to reveal your surprise ✨
               </motion.p>
             )}
-            {/* </div> */}
 
             {scratchRevealed && (
               <motion.button
@@ -830,7 +837,7 @@ function ScratchStage({ onRevealed, scratchRevealed, onNext }) {
   );
 }
 
-function FinalStage({ confetti, setConfetti, onRestart, onBack }) {
+function FinalStage({ confetti, setConfetti, audioRef, onRestart, onBack }) {
   useEffect(() => {
     // small confetti timer
     setConfetti(true);
@@ -838,8 +845,16 @@ function FinalStage({ confetti, setConfetti, onRestart, onBack }) {
     return () => clearTimeout(id);
   }, []);
   return (
-    <motion.div className={"py-4 text-center"}>
+    <motion.div exit={{ opacity: 0 }} className={"py-4 text-center"}>
       <div className="absolute inset-0 -z-10 animate-gradient bg-gradient-to-br from-purple-200 via-pink-100 to-blue-200"></div>
+      <div className="absolute inset-0 -z-10 pointer-events-none">
+        <Lottie
+          animationData={Confetti}
+          loop={false} // run once
+          autoplay={true}
+          style={{ width: "100%", height: "100%" }}
+        />
+      </div>
       <motion.h1
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: [0, 1.4, 1], opacity: [0, 1, 1] }}
@@ -854,51 +869,29 @@ function FinalStage({ confetti, setConfetti, onRestart, onBack }) {
         transition={{ delay: 4, duration: 1.5, ease: "easeOut" }}
         className="mt-4 text-beige-700 text-center relative z-10"
       >
-        I can’t wait to celebrate forever with you. 🤗❤️
+        I can’t wait to celebrate forever with you. 🙃❤️
       </motion.p>
 
       <motion.button
         onClick={() => {
-          window.open("", "_self");
-          window.close();
+          fadeOutAudio(audioRef, 3000); // ⏳ fade out over 3 seconds
+          setTimeout(() => {
+            // window.open("", "_self");
+            // window.close();
+            window.location.href = "about:blank"; 
+          }, 3200); // wait for fade-out to finish
         }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
         transition={{ delay: 6, duration: 1.5, ease: "easeOut" }}
         className="mt-8 px-6 py-3 rounded-full bg-gradient-to-br from-purple-200 to-pink-200 text-offwhite shadow-lg relative z-10"
       >
         Buueee Buueee 🤗💕
       </motion.button>
 
-      {confetti && <ConfettiMini />}
+      {/* {confetti && <ConfettiMini />} */}
     </motion.div>
-    // <motion.div
-    //   initial={{ scale: 0.98, opacity: 0 }}
-    //   animate={{ scale: 1, opacity: 1 }}
-    //   exit={{ opacity: 0 }}
-    //   className="p-6 text-center"
-    // >
-    //   <h1 className="text-4xl font-extrabold text-pink-600">
-    //     Happiest Birthday to you, my Aamena! 💕💕
-    //   </h1>
-    //   <p className="mt-3 text-gray-700">
-    //     I can’t wait to celebrate forever with you. 🤗❤️
-    //   </p>
-
-    //   <div className="mt-6 flex justify-center gap-3">
-    //     <button onClick={onBack} className="px-4 py-2 rounded-md border">
-    //       Back
-    //     </button>
-    //     <button
-    //       onClick={onRestart}
-    //       className="px-5 py-3 rounded-full bg-indigo-600 text-white"
-    //     >
-    //       Play Again
-    //     </button>
-    //   </div>
-
-    //   {confetti && <ConfettiMini />}
-    // </motion.div>
   );
 }
 
@@ -1008,18 +1001,23 @@ function FloatingNotes({ notes, openedNote, onClickNote }) {
   );
 }
 
-function ConfettiMini() {
-  return (
-    <div className="absolute inset-0 pointer-events-none">
-      {/* lightweight CSS confetti */}
-      <div className="confetti-piece" style={{ left: "10%", top: "20%" }} />
-      <div className="confetti-piece" style={{ left: "30%", top: "10%" }} />
-      <div className="confetti-piece" style={{ left: "50%", top: "30%" }} />
-      <div className="confetti-piece" style={{ left: "70%", top: "15%" }} />
-      <style>{`
-        .confetti-piece{ position:absolute; width:12px; height:20px; background:linear-gradient(180deg,#ffd93d,#ff7ab6); transform:rotate(15deg); animation: fall 3s linear forwards }
-        @keyframes fall{0%{transform:translateY(-40px) rotate(0deg)}100%{transform:translateY(520px) rotate(360deg)}}
-      `}</style>
-    </div>
-  );
+function fadeOutAudio(audioRef, duration = 3000) {
+  const audio = audioRef.current;
+  if (!audio) return;
+
+  const startVolume = audio.volume || 0.6;
+  const steps = 30; // number of fade steps
+  const stepTime = duration / steps;
+  let currentStep = 0;
+
+  const fade = setInterval(() => {
+    currentStep++;
+    const newVolume = startVolume * (1 - currentStep / steps);
+    audio.volume = Math.max(newVolume, 0);
+    if (currentStep >= steps) {
+      clearInterval(fade);
+      audio.pause();
+      audio.currentTime = 0; // optional: reset to start
+    }
+  }, stepTime);
 }
